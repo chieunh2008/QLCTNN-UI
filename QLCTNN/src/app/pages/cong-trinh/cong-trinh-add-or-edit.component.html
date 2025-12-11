@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Chỉnh sửa Công Trình' : 'Thêm Mới Công Trình' }}</h2>
+
+<mat-dialog-content>
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner [diameter]="40"></mat-spinner>
+  </div>
+
+  <form [formGroup]="form" *ngIf="!loading">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mã Công Trình *</mat-label>
+      <input matInput formControlName="Code" />
+      <mat-error *ngIf="form.get('Code')?.hasError('required')">Mã công trình là bắt buộc</mat-error>
+      <mat-error *ngIf="form.get('Code')?.hasError('minlength')">Tối thiểu 2 ký tự</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tên Công Trình *</mat-label>
+      <input matInput formControlName="TenCongTrinh" />
+      <mat-error *ngIf="form.get('TenCongTrinh')?.hasError('required')">Tên công trình là bắt buộc</mat-error>
+      <mat-error *ngIf="form.get('TenCongTrinh')?.hasError('minlength')">Tối thiểu 3 ký tự</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Loại Công Trình *</mat-label>
+      <mat-select formControlName="LoaiId">
+        <mat-option *ngFor="let pt of projectTypes" [value]="pt.Id">
+          {{ pt.TenLoai }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('LoaiId')?.hasError('required')">Loại công trình là bắt buộc</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Địa Chỉ</mat-label>
+      <input matInput formControlName="DiaChi" />
+    </mat-form-field>
+
+    <div class="coordinates-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Vĩ độ (Lat) *</mat-label>
+        <input matInput formControlName="Lat" type="number" step="0.0001" />
+        <mat-error *ngIf="form.get('Lat')?.hasError('required')">Vĩ độ là bắt buộc</mat-error>
+        <mat-error *ngIf="form.get('Lat')?.hasError('pattern')">Vui lòng nhập số hợp lệ</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Kinh độ (Lon) *</mat-label>
+        <input matInput formControlName="Lon" type="number" step="0.0001" />
+        <mat-error *ngIf="form.get('Lon')?.hasError('required')">Kinh độ là bắt buộc</mat-error>
+        <mat-error *ngIf="form.get('Lon')?.hasError('pattern')">Vui lòng nhập số hợp lệ</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- MoreRowValue Section -->
+    <div class="more-row-value-section">
+      <label class="section-title">Giá Trị Bổ Sung</label>
+      <div class="input-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nhập giá trị</mat-label>
+          <input matInput [(ngModel)]="newMoreRowValue" [ngModelOptions]="{ standalone: true }" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addMoreRowValue()" type="button">
+          <mat-icon>add</mat-icon>
+          Thêm
+        </button>
+      </div>
+
+      <div *ngIf="moreRowValues.length > 0" class="values-list">
+        <mat-chip-set>
+          <mat-chip *ngFor="let value of moreRowValues; let index = index">
+            {{ value }}
+            <button matChipRemove (click)="removeMoreRowValue(index)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || form.invalid">
+    {{ isEdit ? 'Cập Nhật' : 'Thêm Mới' }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,26 @@
+<header class="app-header">
+  <div class="header-left">
+    <img src="../../../assets/images/logo.png" alt="Logo" class="logo"> 
+  </div>
+  <div class="header-right">
+    <button mat-icon-button class="notify-btn">
+      <mat-icon>notifications</mat-icon>
+      <span class="notify-dot"></span>
+    </button>
+    <div class="user-menu" [class.open]="dropdownOpen">
+      <span class="user-name" (click)="dropdownOpen = !dropdownOpen" [class.active]="dropdownOpen">
+        <mat-icon>account_circle</mat-icon>
+        {{ user?.fullname || 'User' }}
+        <mat-icon class="arrow" [class.open]="dropdownOpen">expand_more</mat-icon>
+      </span>
+      <div class="dropdown" *ngIf="dropdownOpen">
+        <div class="dropdown-item" (click)="info()">
+          <mat-icon>info</mat-icon> Thông tin
+        </div>
+        <div class="dropdown-item" (click)="logout()">
+          <mat-icon>logout</mat-icon> Đăng xuất
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,118 @@
+.app-header {
+  width: 100%;
+  height: 64px;
+  background: linear-gradient(90deg, #8c7851 0%, whitesmoke 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: relative;
+  z-index: 100;
+}
+.header-left .logo {
+  height: 50px;
+  line-height: 64px;
+  filter:drop-shadow(1px 1px 20px yellow)
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.notify-btn {
+  position: relative;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.notify-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #ff5252;
+  border-radius: 50%;
+  display: inline-block;
+}
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.user-name {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  color: #8c7851;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+.user-name:hover {
+  background:linear-gradient(20deg, whitesmoke 0%, #8c7851 100%);
+}
+.user-name mat-icon.arrow {
+  margin-left: 4px;
+  transition: transform 0.2s;
+}
+.user-name mat-icon.arrow.open {
+  transform: rotate(180deg);
+}
+.dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #fff;
+  min-width: 20vh;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  border-radius: 8px;
+  padding: 8px 0;
+  z-index: 200;
+  animation: fadeIn 0.2s;
+}
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+.user-name {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  color: #8c7851;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: background 0.2s;
+  min-width: 10vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+.user-name.active, .user-name:active, .user-menu.open .user-name {
+    background:linear-gradient(20deg, whitesmoke 0%, #8c7851 100%);
+}
+.dropdown-item {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: #fff;
+  color: #333;
+  
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.dropdown-item:hover {
+    background:linear-gradient(20deg, whitesmoke 0%, #8c7851 100%);
+  color: #8c7851;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>{{ id && id > 0 ? 'Chỉnh sửa loại công trình' : 'Thêm mới loại công trình' }}</h2>
+<br>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mã loại công trình</mat-label>
+      <input matInput formControlName="Code" />
+      <mat-error *ngIf="form.get('Code')?.hasError('required')">Mã là bắt buộc</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tên loại công trình</mat-label>
+      <input matInput formControlName="TenLoai" />
+      <mat-error *ngIf="form.get('TenLoai')?.hasError('required')">Tên là bắt buộc</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mô tả</mat-label>
+      <textarea matInput formControlName="MoTa" rows="3"></textarea>
+    </mat-form-field>
+
+    <!-- Values Management Section -->
+    <div class="values-section">
+      <label class="section-label">Giá trị đặc thù</label>
+      
+      <!-- Add New Value -->
+      <div class="add-value-container">
+        <mat-form-field appearance="outline" class="value-input">
+          <mat-label>Nhập giá trị mới</mat-label>
+          <input matInput [(ngModel)]="newValue" [ngModelOptions]="{standalone: true}" 
+                 placeholder="Ví dụ: LuuLuongNuoc_Max"
+                 (keyup.enter)="addValue()">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addValue()" type="button" class="add-btn">
+          <mat-icon>add</mat-icon> Thêm
+        </button>
+      </div>
+
+      <!-- Display Values List -->
+      <div class="values-list" *ngIf="values.length > 0">
+        <label class="values-label">Các giá trị đã thêm ({{ values.length }}):</label>
+        <div class="chips-container">
+          <mat-chip-set aria-label="Danh sách giá trị">
+            <mat-chip *ngFor="let value of values; let i = index" removable (removed)="removeValue(i)">
+              {{ value }}
+              <button matChipRemove [attr.aria-label]="'Xóa ' + value">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="values.length === 0" class="empty-values">
+        <p>Chưa có giá trị nào. Hãy thêm giá trị đặc thù.</p>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid || loading">
+    {{ loading ? 'Đang xử lý...' : (id && id > 0 ? 'Cập nhật' : 'Thêm mới') }}
+  </button>
+</mat-dialog-actions>

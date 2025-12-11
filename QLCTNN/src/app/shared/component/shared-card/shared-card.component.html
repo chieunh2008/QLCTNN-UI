@@ -1,0 +1,14 @@
+<div class="shared-card" [ngStyle]="{
+    'width': '90%' ,
+    'border-radius': borderRadius,
+    'padding': '5%',
+    'background': background,
+  }">
+    <div class="shared-card-header" *ngIf="header">
+        {{ header }}
+    </div>
+    <hr *ngIf="header" style="margin: 8px 0; border: none; border-top: 1.5px solid #e0e0e0;" />
+    <div class="shared-card-content" >
+        <ng-content></ng-content>
+    </div>
+</div>

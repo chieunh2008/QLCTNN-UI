@@ -1,0 +1,127 @@
+
+.menu-left {
+  width: 220px;
+  background: #fff;
+  height: 100vh;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  padding-top: 24px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  overflow-y: auto;
+.menu-left::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+  transition: width 0.5 cubic-bezier(0, 0, 0.45, 1);
+}
+
+.menu-left.collapsed {
+  width: 60px;
+}
+.menu-left.collapsed mat-icon {
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.5rem !important;
+  margin-right: 0 !important;
+  width: 100%;
+}
+.menu-left.collapsed a {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.menu-left .toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: -18px;
+  width: 36px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: right 0.2s;
+}
+
+.menu-left.collapsed .toggle-btn {
+  right: -18px;
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  padding: 0;
+  font-size: 1.3rem;
+}
+
+.menu-left.collapsed span {
+  opacity: 0;
+  width: 0;
+  transition: opacity 0.1s, width 0.1s;
+  pointer-events: none;
+  overflow: hidden;
+}
+.menu-left:not(.collapsed) span {
+  opacity: 1;
+  width: auto;
+  transition: opacity 0.15s 0.18s, width 0.15s 0.18s;
+  pointer-events: auto;
+  overflow: visible;
+  /* Ẩn chữ cho đến khi menu mở rộng xong */
+  animation: showMenuText 0.01s linear 0.1s forwards;
+  visibility: hidden;
+}
+@keyframes showMenuText {
+  to { visibility: visible; }
+}
+.menu-left:not(.collapsed) span {
+  opacity: 1;
+  width: auto;
+  transition: opacity 0.15s 0.18s, width 0.15s 0.18s;
+  pointer-events: auto;
+  overflow: visible;
+}
+
+.menu-left.collapsed a {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.menu-left ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;    
+}
+.menu-left li {
+  margin-bottom: 8px;
+}
+.menu-left a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.menu-left a.active, .menu-left a:hover {
+  background: linear-gradient(90deg, #f5e9da 0%, #fff 100%);
+  color: #8c7851;
+}
+.menu-left mat-icon {
+  margin-right: 12px;
+  color: #8c7851;
+}
+.menu-left span {
+  font-size: 1rem;
+  font-weight: 500;
+}

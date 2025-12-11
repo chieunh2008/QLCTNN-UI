@@ -1,0 +1,119 @@
+.dialog-form { 
+  width: 100%; 
+}
+
+.full-width { 
+  width: 100%; 
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mat-dialog-actions { 
+  margin-top: 12px;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Values Section Styles */
+.values-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border-left: 4px solid #1976d2;
+}
+
+.section-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.add-value-container {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 15px;
+}
+
+.value-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.add-btn {
+  height: 56px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.values-list {
+  margin-top: 15px;
+}
+
+.values-label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.empty-values {
+  text-align: center;
+  padding: 15px;
+  color: #999;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Chip Styles */
+::ng-deep .mat-chip {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
+::ng-deep .mat-chip.mat-chip-remove:hover {
+  background-color: #bbdefb !important;
+}
+
+::ng-deep .mat-chip-remove {
+  cursor: pointer;
+}
+
+@media (max-width: 960px) {
+  mat-dialog-content {
+    padding: 15px;
+  }
+
+  .add-value-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+}

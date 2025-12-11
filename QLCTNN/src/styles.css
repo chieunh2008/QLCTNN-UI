@@ -1,0 +1,66 @@
+
+
+html, body { height: 100%; }
+/* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+/* Thành công */
+.snackbar-success {
+  background: #22c55e !important; /*  Xanh lá tươi */
+  border-radius: 14px;
+  color: #fff !important;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Lỗi nghiêm trọng */
+.snackbar-error {
+  background: #ef4444 !important; /*  Đỏ tươi */
+  border-radius: 14px;
+  color: #fff !important;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Cảnh báo */
+.snackbar-warning {
+  background: #facc15 !important; /*  Vàng nghệ đậm */
+  border-radius: 14px;
+  color: #000 !important;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Thông tin */
+.snackbar-info {
+  background: #3b82f6 !important; /*  Xanh dương */
+  border-radius: 14px;
+  color: #fff !important;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Đang xử lý / tải */
+.snackbar-loading {
+  background: #818cf8 !important; /*  Xanh tím */
+  border-radius: 14px;
+  color: #fff !important;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Hành động bị từ chối / không được phép */
+.snackbar-denied {
+  background: #a855f7 !important; /*  Tím đậm */
+  border-radius: 14px;
+  color: #fff !important;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

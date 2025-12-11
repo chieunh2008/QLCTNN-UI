@@ -1,0 +1,85 @@
+<div class="login-bg">
+  <div class="container" [ngClass]="{'right-panel-active': isSignUp}">
+    <!-- Sign Up Form -->
+    <div class="form-container sign-up-container" style="padding: 0px">
+        <h1>Tạo tài khoản</h1> 
+      <form [formGroup]="signUpForm">
+      <!-- <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()"> -->
+        <mat-form-field appearance="outline">
+          <mat-label>Tên đăng nhập</mat-label>
+          <input matInput formControlName="username" placeholder="Nhập tên đăng nhập...">
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Họ và tên</mat-label>
+          <input matInput formControlName="fullname" placeholder="Nhập họ và tên...">
+          <mat-icon matPrefix>badge</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Nhập email...">
+          <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Mật khẩu</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Nhập mật khẩu...">
+          <mat-icon matPrefix>lock</mat-icon>
+        </mat-form-field>
+        <!-- <mat-form-field appearance="outline">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" placeholder="Role">
+            <mat-option value="admin">Admin</mat-option>
+            <mat-option value="user">User</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>supervisor_account</mat-icon>
+        </mat-form-field> -->
+        <button mat-raised-button color="primary" [disabled]="signUpForm.invalid || loading">
+          <span *ngIf="!loading">Đăng ký</span>
+          <span *ngIf="loading">
+            <mat-progress-spinner diameter="20" mode="indeterminate" color="accent" style="vertical-align: middle; margin-right: 8px;" *ngIf="loading"></mat-progress-spinner>
+            Đang đăng ký...
+          </span>
+        </button>
+      </form>
+    </div>
+    <!-- Sign In Form -->
+    <div class="form-container sign-in-container">
+      <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
+        <h1>Đăng nhập</h1>
+        <mat-form-field appearance="outline">
+          <mat-label>Tên đăng nhập</mat-label>
+          <input matInput formControlName="username" placeholder="Nhập tên đăng nhập...">
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Mật khẩu</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Nhập password...">
+          <mat-icon matPrefix>lock</mat-icon>
+        </mat-form-field>
+        <a href="#">Quên mật khẩu?</a>
+        <button mat-raised-button color="primary" [disabled]="signInForm.invalid || loading">
+          <span *ngIf="!loading">Đăng nhập</span>
+          <span *ngIf="loading">
+            <mat-progress-spinner diameter="20" mode="indeterminate" color="accent" style="vertical-align: middle; margin-right: 8px;" *ngIf="loading"></mat-progress-spinner>
+            Đang đăng nhập...
+          </span>
+        </button>
+      </form>
+    </div>
+    <!-- Overlay -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Chào mừng trở lại!</h1>
+          <p>Để tiếp tục kết nối, vui lòng đăng nhập bằng thông tin cá nhân của bạn</p>
+          <button class="ghost" id="signIn" mat-stroked-button color="primary" (click)="switchPanel(false)">Đăng nhập</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Xin chào, bạn mới!</h1>
+          <p>Hãy nhập thông tin cá nhân để bắt đầu hành trình cùng chúng tôi</p>
+          <button class="ghost" id="signUp" mat-stroked-button color="primary" (click)="switchPanel(true)">Đăng ký</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

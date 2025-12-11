@@ -1,0 +1,49 @@
+
+html, body, app-root {
+  height: 100%;
+}
+/* .header{
+} */
+.app-layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 92.5vh; 
+  background: #f6f5f7;
+}
+
+.main-content {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0;
+  background: #f6f5f7;
+  min-height: 60vh;
+  box-sizing: border-box;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.main-content::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.app-footer {
+  width: 100%;
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  .menu-left {
+    width: 100%;
+    height: 100vh;
+    box-shadow: none;
+    padding-top: 0;
+    border-bottom: 1px solid #eee;
+  }
+  .main-content {
+  }
+  .page{
+    height: 100vh;
+  }
+}
