@@ -19,10 +19,27 @@
       <textarea matInput formControlName="MoTa" rows="3"></textarea>
     </mat-form-field>
 
+    <!-- Chọn Tên Ngưỡng (tách riêng) -->
+    <mat-form-field *ngIf="moreRowOptions.length > 0" appearance="outline" class="full-width">
+      <mat-label>Chọn Tên Ngưỡng</mat-label>
+      <mat-select multiple [(ngModel)]="selectedTenNguong" [ngModelOptions]="{standalone: true}">
+        <mat-option *ngFor="let mr of moreRowOptions" [value]="mr">{{ mr }}</mat-option>
+      </mat-select>
+      <mat-hint>Chọn nhiều trường để làm ngưỡng</mat-hint>
+    </mat-form-field>
+
+    <div *ngIf="selectedTenNguong.length > 0 && moreRowOptions.length > 0" class="values-list">
+      <mat-chip-set>
+        <mat-chip *ngFor="let t of selectedTenNguong">{{ t }}</mat-chip>
+      </mat-chip-set>
+    </div>
+
     <!-- Values Management Section -->
     <div class="values-section">
       <label class="section-label">Giá trị đặc thù</label>
       
+<!-- Tên Ngưỡng (đã được tách lên phía trên) -->
+
       <!-- Add New Value -->
       <div class="add-value-container">
         <mat-form-field appearance="outline" class="value-input">
@@ -39,6 +56,7 @@
       <!-- Display Values List -->
       <div class="values-list" *ngIf="values.length > 0">
         <label class="values-label">Các giá trị đã thêm ({{ values.length }}):</label>
+
         <div class="chips-container">
           <mat-chip-set aria-label="Danh sách giá trị">
             <mat-chip *ngFor="let value of values; let i = index" removable (removed)="removeValue(i)">

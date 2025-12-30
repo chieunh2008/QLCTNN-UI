@@ -1,0 +1,159 @@
+<div class="container">
+  <div class="header-section">
+    <div class="header-title">
+      <h2>Quản Lý Tình Trạng Công Trình</h2>
+      <button mat-icon-button (click)="toggleFilter()" matTooltip="Lọc dữ liệu">
+        <mat-icon>filter_alt</mat-icon>
+      </button>
+      <button mat-icon-button (click)="resetFilter()" matTooltip="Xóa bộ lọc">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <button mat-raised-button color="primary" (click)="openAdd()">
+      <mat-icon>add</mat-icon>
+      Thêm Mới
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section" *ngIf="showFilter">
+    <form [formGroup]="filterForm" (ngSubmit)="onFilterChange()">
+      <mat-form-field appearance="outline">
+        <mat-label>Tìm kiếm</mat-label>
+        <input matInput formControlName="query" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Loại Công Trình</mat-label>
+        <mat-select formControlName="LCTId">
+          <mat-option [value]="null">Tất cả</mat-option>
+          <mat-option *ngFor="let pt of projectTypes" [value]="pt.Id">{{ pt.TenLoai }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Công Trình</mat-label>
+        <mat-select formControlName="CTId">
+          <mat-option [value]="null">Tất cả</mat-option>
+          <mat-option *ngFor="let ct of filteredCongTrinhs" [value]="ct.Id">{{ ct.TenCongTrinh }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ngày bắt đầu</mat-label>
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ngày kết thúc</mat-label>
+        <input matInput [matDatepicker]="endPicker" formControlName="endDate" />
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-raised-button color="accent" type="submit">Lọc</button>
+    </form>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section" *ngIf="!loading">
+    <div *ngIf="items.length === 0" class="empty-state">
+      <p>Không có dữ liệu</p>
+    </div>
+
+    <table mat-table [dataSource]="items" *ngIf="items.length > 0" class="data-table">
+      <!-- STT Column -->
+      <ng-container matColumnDef="stt">
+        <th mat-header-cell *matHeaderCellDef>STT</th>
+        <td mat-cell *matCellDef="let element; let index = index">{{ (filter.pageIndex - 1) * filter.pageSize + index + 1 }}</td>
+      </ng-container>
+
+      <!-- TenCongTrinh Column -->
+      <ng-container matColumnDef="TenCongTrinh">
+        <th mat-header-cell *matHeaderCellDef>Công Trình</th>
+        <td mat-cell *matCellDef="let element">{{ getProjectName(element.CTId) }}</td>
+      </ng-container>
+
+      <!-- TenNguong Column -->
+      <ng-container matColumnDef="TenNguong">
+        <th mat-header-cell *matHeaderCellDef>Tên Ngưỡng</th>
+        <td mat-cell *matCellDef="let element">{{ element.TenNguong }}</td>
+      </ng-container>
+
+      <!-- Value Column -->
+      <ng-container matColumnDef="Value">
+        <th mat-header-cell *matHeaderCellDef>Giá Trị</th>
+        <td mat-cell *matCellDef="let element">{{ element.Value }}</td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef>Ngày đo</th>
+        <td mat-cell *matCellDef="let element">{{ element.Date | date: 'short' }}</td>
+      </ng-container>
+
+      <!-- Note Column -->
+      <ng-container matColumnDef="Note">
+        <th mat-header-cell *matHeaderCellDef>Ghi chú</th>
+        <td mat-cell *matCellDef="let element">{{ element.Note || '-' }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Thao Tác</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="openEdit(element)" matTooltip="Chỉnh sửa">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteItem(element.Id)" matTooltip="Xóa">
+            <mat-icon color="warn">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
+
+  <!-- Paginator Section -->
+  <div class="paginator-section" *ngIf="!loading && items.length > 0">
+    <div class="paginator-controls">
+      <button mat-icon-button (click)="firstPage()" [disabled]="filter.pageIndex === 1" matTooltip="Trang đầu">
+        <mat-icon>first_page</mat-icon>
+      </button>
+      <button mat-icon-button (click)="prevPage()" [disabled]="filter.pageIndex === 1" matTooltip="Trang trước">
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+
+      <div class="page-buttons">
+        <button
+          *ngFor="let page of pageButtons"
+          mat-button
+          (click)="goToPage(page)"
+          [class.active-page]="page === filter.pageIndex">
+          {{ page }}
+        </button>
+      </div>
+
+      <button mat-icon-button (click)="nextPage()" [disabled]="filter.pageIndex === totalPages" matTooltip="Trang sau">
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+      <button mat-icon-button (click)="lastPage()" [disabled]="filter.pageIndex === totalPages" matTooltip="Trang cuối">
+        <mat-icon>last_page</mat-icon>
+      </button>
+    </div>
+
+    <div class="paginator-info">
+      Hiển thị {{ (filter.pageIndex - 1) * filter.pageSize + 1 }} -
+      {{ Math.min(filter.pageIndex * filter.pageSize, totalRecords) }} / {{ totalRecords }} bản ghi
+    </div>
+  </div>
+</div>

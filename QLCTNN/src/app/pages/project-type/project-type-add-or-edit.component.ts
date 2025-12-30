@@ -16,6 +16,12 @@ export class ProjectTypeAddOrEditComponent implements OnInit {
   @Input() id: number;
   values: string[] = [];
   newValue: string = '';
+  // Các trường ngưỡng dựa trên các giá trị đặc thù
+  get moreRowOptions(): string[] {
+    return Array.from(new Set(this.values));
+  }
+  // Các trường được chọn làm ngưỡng (TenNguong)
+  selectedTenNguong: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -69,7 +75,13 @@ export class ProjectTypeAddOrEditComponent implements OnInit {
   }
 
   removeValue(index: number): void {
-    this.values.splice(index, 1);
+    const removed = this.values.splice(index, 1)[0];
+    if (removed) {
+      this.selectedTenNguong = this.selectedTenNguong.filter(s => s !== removed);
+    }
+    if (this.values.length === 0) {
+      this.selectedTenNguong = [];
+    }
   }
 
   async loadForEdit(id: number): Promise<void> {
@@ -87,6 +99,13 @@ export class ProjectTypeAddOrEditComponent implements OnInit {
       } else if (item.Value && typeof item.Value === 'string') {
         this.parseValuesFromString(item.Value);
       }
+
+      // Nếu server trả TenNguong (mảng hoặc chuỗi) thì parse và gán
+      if ((item as any).TenNguong && Array.isArray((item as any).TenNguong)) {
+        this.selectedTenNguong = [...(item as any).TenNguong];
+      } else if ((item as any).TenNguong && typeof (item as any).TenNguong === 'string') {
+        this.selectedTenNguong = (item as any).TenNguong.split(',').map((v: string) => v.trim()).filter((v: string) => v);
+      }
     } catch (err: any) {
       this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
       this.dialogRef.close({ saved: false });
@@ -100,6 +119,7 @@ export class ProjectTypeAddOrEditComponent implements OnInit {
     this.loading = true;
     const formData: any = { ...this.form.value };
     formData.value = this.values;
+    formData.TenNguong = this.selectedTenNguong;
 
     try {
       if (this.id && this.id > 0) {

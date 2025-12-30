@@ -4,6 +4,7 @@ export interface ProjectType {
   Code: string;
   MoTa: string;
   Value: string[];
+  TenNguong?: string[];
   Status?: number;
   CreatedAt?: string;
   UpdatedAt?: string;

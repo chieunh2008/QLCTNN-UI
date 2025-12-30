@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{ data?.id && data.id > 0 ? 'Chỉnh sửa Tình Trạng' : 'Thêm Tình Trạng' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Chọn Loại Công Trình *</mat-label>
+      <mat-select formControlName="LCTId">
+        <mat-option *ngFor="let pt of projectTypes" [value]="pt.Id">{{ pt.TenLoai }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('LCTId')?.hasError('required')">Vui lòng chọn loại công trình</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Chọn Công Trình *</mat-label>
+      <mat-select formControlName="CTId">
+        <mat-option *ngFor="let ct of filteredCongTrinhs" [value]="ct.Id">{{ ct.TenCongTrinh }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('CTId')?.hasError('required')">Vui lòng chọn công trình</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="tenNguongOptions.length > 0" appearance="outline" class="full-width">
+      <mat-label>Chọn Tên Ngưỡng *</mat-label>
+      <mat-select formControlName="TenNguong">
+        <mat-option *ngFor="let t of tenNguongOptions" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('TenNguong')?.hasError('required')">Vui lòng chọn tên ngưỡng</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Giá trị *</mat-label>
+      <input matInput type="number" formControlName="Value" />
+      <mat-error *ngIf="form.get('Value')?.hasError('required')">Vui lòng nhập giá trị</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Ngày đo *</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="Date" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="form.get('Date')?.hasError('required')">Vui lòng chọn ngày</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Ghi chú</mat-label>
+      <input matInput formControlName="Note" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || form.invalid">Lưu</button>
+</mat-dialog-actions>

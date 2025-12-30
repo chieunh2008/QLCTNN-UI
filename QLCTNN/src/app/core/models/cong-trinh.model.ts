@@ -7,6 +7,7 @@ export interface CongTrinh {
   Lat: number;
   Lon: number;
   InfoValue?: string[];
+  TenNguong?: string[];
   CreatedAt?: string;
   UpdatedAt?: string;
 }

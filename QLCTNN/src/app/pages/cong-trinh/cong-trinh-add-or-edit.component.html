@@ -51,6 +51,23 @@
       </mat-form-field>
     </div>
 
+    <!-- Trường đặc biệt (Ngưỡng) -->
+    <mat-form-field *ngIf="moreRowOptions.length > 0" appearance="outline" class="full-width">
+      <mat-label>Chọn Trường Đặc Biệt (Ngưỡng)</mat-label>
+      <mat-select multiple [(ngModel)]="selectedTenNguong" [ngModelOptions]="{ standalone: true }">
+        <mat-option *ngFor="let mr of moreRowOptions" [value]="mr">
+          {{ mr }}
+        </mat-option>
+      </mat-select>
+      <mat-hint>Chọn nhiều trường để làm ngưỡng</mat-hint>
+    </mat-form-field>
+
+    <div *ngIf="selectedTenNguong.length > 0 && moreRowOptions.length > 0" class="values-list">
+      <mat-chip-set>
+        <mat-chip *ngFor="let t of selectedTenNguong">{{ t }}</mat-chip>
+      </mat-chip-set>
+    </div>
+
     <!-- MoreRowValue Section -->
     <div class="more-row-value-section">
       <label class="section-title">Giá Trị Bổ Sung</label>

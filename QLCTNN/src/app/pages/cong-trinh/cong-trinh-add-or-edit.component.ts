@@ -17,6 +17,12 @@ export class CongTrinhAddOrEditComponent implements OnInit {
   loading = false;
   moreRowValues: string[] = [];
   newMoreRowValue = '';
+  // Các trường đặc biệt (ngưỡng) được lấy từ `moreRowValues` (Giá trị bổ sung)
+  get moreRowOptions(): string[] {
+    return Array.from(new Set(this.moreRowValues));
+  }
+  // Các trường được chọn làm ngưỡng (TenNguong)
+  selectedTenNguong: string[] = [];
   projectTypes: ProjectType[] = [];
 
   constructor(
@@ -53,6 +59,9 @@ export class CongTrinhAddOrEditComponent implements OnInit {
     this.congTrinhService.getById(this.data.id).then((data: any) => {
       const congTrinh: CongTrinh = data.data;
       this.moreRowValues = this.parseValuesFromString(congTrinh.InfoValue);
+      // Nếu server trả TenNguong (chuỗi hoặc mảng), parse và gán vào selectedTenNguong
+      this.selectedTenNguong = this.parseValuesFromString((congTrinh as any).TenNguong);
+
       this.form.patchValue({
         Code: congTrinh.Code,
         TenCongTrinh: congTrinh.TenCongTrinh,
@@ -93,7 +102,15 @@ export class CongTrinhAddOrEditComponent implements OnInit {
   }
 
   removeMoreRowValue(index: number): void {
-    this.moreRowValues.splice(index, 1);
+    const removed = this.moreRowValues.splice(index, 1)[0];
+    if (removed) {
+      // Nếu giá trị bị xóa nằm trong các ngưỡng đã chọn thì loại bỏ nó
+      this.selectedTenNguong = this.selectedTenNguong.filter(s => s !== removed);
+    }
+    // Nếu danh sách bổ sung trống, xóa hết các ngưỡng đã chọn
+    if (this.moreRowValues.length === 0) {
+      this.selectedTenNguong = [];
+    }
   }
 
   onCancel(): void {
@@ -110,7 +127,8 @@ export class CongTrinhAddOrEditComponent implements OnInit {
     try {
       const formData = {
         ...this.form.value,
-        MoreRowValue: this.moreRowValues
+        MoreRowValue: this.moreRowValues,
+        TenNguong: this.selectedTenNguong
       };
 
       let res: any;

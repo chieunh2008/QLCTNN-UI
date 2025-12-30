@@ -4,6 +4,8 @@ import { ProjectTypeComponent } from './project-type/project-type.component';
 import { ProjectTypeAddOrEditComponent } from './project-type/project-type-add-or-edit.component';
 import { CongTrinhComponent } from './cong-trinh/cong-trinh.component';
 import { CongTrinhAddOrEditComponent } from './cong-trinh/cong-trinh-add-or-edit.component';
+import { TinhTrangComponent } from './tinh-trang/tinh-trang.component';
+import { TinhTrangAddOrEditComponent } from './tinh-trang/tinh-trang-add-or-edit.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PagesRoutingModule } from './pages-routing.module';
@@ -23,6 +25,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -31,7 +35,9 @@ import { MatDividerModule } from '@angular/material/divider';
     ProjectTypeComponent,
     ProjectTypeAddOrEditComponent,
     CongTrinhComponent,
-    CongTrinhAddOrEditComponent
+    CongTrinhAddOrEditComponent,
+    TinhTrangComponent,
+    TinhTrangAddOrEditComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +58,9 @@ import { MatDividerModule } from '@angular/material/divider';
     MatCardModule,
     MatChipsModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 export class PagesModule { }
