@@ -6,6 +6,136 @@
   background: #f5f5f5;
   padding: 32px 0;
 }
-mat-card {
-  width: 90%;
+.dashboard-grid {
+  width: 92%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* two cards per row */
+  gap: 16px;
+  grid-auto-rows: 1fr; /* make rows equal height */
+  align-items: stretch;
 }
+
+/* Ensure shared-card inner container stretches and supports scrolling */
+.dashboard-grid app-shared-card {
+  display: flex;
+  flex-direction: column;
+  height: 33vh;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  overflow: hidden; /* prevent inner content from overflowing the card */
+}
+.dashboard-grid app-shared-card .shared-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.dashboard-grid app-shared-card .shared-card-header {
+  flex: 0 0 auto;
+  margin-bottom: 8px;
+}
+.dashboard-grid app-shared-card .shared-card-content {
+  flex: 1 1 auto;
+  min-height: 0; /* allow flex child to shrink and enable overflow */
+  display: block;
+  overflow: auto; /* allow scroll when content exceeds card height */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on mobile */
+  padding-right: 6px; /* avoid content touching scrollbar */
+  scrollbar-width: thin; /* Firefox */
+  margin-top: 0; /* override internal spacing to avoid visual overlap */
+}
+
+/* Webkit scrollbar styling */
+.dashboard-grid app-shared-card .shared-card-content::-webkit-scrollbar { width: 8px; height: 8px }
+.dashboard-grid app-shared-card .shared-card-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px }
+.dashboard-grid app-shared-card .shared-card-content::-webkit-scrollbar-track { background: transparent }
+
+.dashboard-grid app-shared-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  z-index: 2;
+}
+
+.dashboard-grid app-shared-card:hover .overview-item .count { transform: scale(1.06); }
+.dashboard-grid app-shared-card:hover .overview-item .label { transform: scale(1.03); color: rgba(0,0,0,0.85); }
+
+/* Disable card hover scale on small screens for better UX */
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dashboard-grid app-shared-card:hover { transform: none; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .monitoring-layout { flex-direction: column; }
+  .monitoring-map { width:100%; }
+  .monitoring-map { order: 2; }
+}
+
+.overview-grid { display:flex; align-items:center; gap:16px; }
+.overview-item { flex: 1; padding: 10px; }
+.overview-item .count { font-size: 28px; font-weight: 700; }
+.overview-item .label { color: rgba(0,0,0,0.6); }
+.overview-actions { display:flex; align-items:center; }
+
+.small-chart { height: 260px; }
+
+.recent-table { width:100%; border-collapse: collapse; }
+.recent-table td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+.recent-table .name { font-weight:600; }
+.recent-table .address { color: rgba(0,0,0,0.6); font-size: 13px; }
+.recent-table .type { text-align: right; color: rgba(0,0,0,0.6); }
+
+/* Monitoring styles */
+.monitoring-layout { display:flex; gap:16px; align-items:flex-start; }
+.monitoring-table { flex: 1; overflow: auto; max-height: 380px; }
+.monitoring-table-inner { width: 100%; border-collapse: collapse; }
+.monitoring-table-inner th { text-align:left; padding:8px; background:#f5f5f5; font-weight:600; }
+.monitoring-table-inner td { padding:8px; border-bottom:1px solid #eee; }
+.status-badge { padding:4px 8px; border-radius:12px; color:#fff; font-weight:600; font-size:12px; }
+.status-normal { background:#16a34a; }
+.status-warning { background:#f59e0b; }
+.status-danger { background:#ef4444; }
+
+.monitoring-map { width: 440px; height: 360px; border-radius:6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+
+/* Menu grid styles */
+.monitoring-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.menu-item {
+  position: relative;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  min-height: 80px;
+}
+.menu-item:focus { outline: 2px solid rgba(63,81,181,0.2); }
+.menu-item:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+.menu-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.menu-title { font-weight:600; }
+.menu-sub { color: rgba(0,0,0,0.6); font-size:13px; margin-top:6px; }
+
+/* Hover detail panel inside card */
+.menu-hover { position:absolute; left:12px; right:12px; bottom:12px; background: rgba(255,255,255,0.98); padding:8px; border-radius:6px; box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
+.menu-hover .message { color: rgba(0,0,0,0.8); margin-bottom:6px; }
+
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .monitoring-layout { flex-direction: column; }
+  .monitoring-map { width:100%; }
+  .monitoring-map { order: 2; }
+}
+
+/* Type menu */
+.type-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: start; }
+.type-tile { position: relative; padding: 12px; border-radius: 8px; background:#fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; min-height: 72px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: visible; }
+.type-title { font-weight:600; margin-bottom:6px; }
+.type-count { font-size:20px; margin-top:6px; line-height:1; }
+.type-hover { position:absolute; right:8px; top:8px; background:rgba(0,0,0,0.75); color:#fff; padding:4px 8px; border-radius:4px; font-size:12px; z-index: 20; }
+
+/* Ensure scroll area has comfortable padding and doesn't clip content */
+.dashboard-grid app-shared-card .shared-card-content { padding: 12px; box-sizing: border-box; }
+
+/* Monitoring hover pop panel should be above tiles */
+.menu-hover { z-index: 30; }
+
+/* Make monitoring menu items have min height and spacing so items do not overlay */
+.monitoring-menu .menu-item { min-height: 84px; overflow: visible; }
+
+

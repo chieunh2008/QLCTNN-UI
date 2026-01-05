@@ -8,6 +8,6 @@ import { SharedCardComponent } from './component/shared-card/shared-card.compone
 @NgModule({
   declarations: [BarChartComponent, SharedCardComponent],
   imports: [CommonModule, NgChartsModule],
-  exports: [BarChartComponent, SharedCardComponent]
+  exports: [BarChartComponent, SharedCardComponent, NgChartsModule]
 })
 export class SharedModule {}

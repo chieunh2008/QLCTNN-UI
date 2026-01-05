@@ -1,0 +1,238 @@
+/* Minimal styles for project-location page — avoid overbroad rules that interfere with Leaflet */
+:root {
+  --map-height: 600px;
+}
+
+/* Header / actions (kept minimal to match other pages) */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-title h2 {
+  margin: 0;
+}
+
+/* Card-like container for the map area */
+.table-section {
+  background: #fff;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+/* Map container: set to 80% width and 80vh height, centered */
+.map-container {
+  width: 97%;
+  height: 74vh;
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+/* The actual Leaflet root element (#map) should fill the container */
+/* #map {
+  height: 100%;
+  width: 100%;
+} */
+
+/* Small utility styles */
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  color: rgba(0,0,0,0.6);
+}
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+@media (max-width: 600px) {
+  :root { --map-height: 360px; }
+}
+
+/* Custom map marker styles */
+.custom-div-icon { display:flex; align-items:center; justify-content:center; }
+.custom-div-icon .map-marker-icon svg { display:block; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.15)); }
+.custom-div-icon .map-marker-icon { transform: translateY(-4px); cursor: pointer; }
+
+/* Tooltip style */
+.map-marker-tooltip {
+  background: rgba(0,0,0,0.85) !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+.map-marker-tooltip.leaflet-tooltip-top::after { background: rgba(0,0,0,0.85) !important; }
+
+
+.container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.header-title h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.filter-section {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+.filter-section button {
+  grid-column: 1 / -1;
+}
+
+.table-section {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  padding: 15px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.data-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.data-table tr:hover {
+  background-color: #fafafa;
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.paginator-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.paginator-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.page-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.page-buttons button {
+  min-width: 40px;
+  height: 40px;
+}
+
+.page-buttons button.active-page {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.paginator-info {
+  text-align: right;
+  font-size: 14px;
+  color: #666;
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filter-section form {
+    grid-template-columns: 1fr;
+  }
+
+  .paginator-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .paginator-controls {
+    flex-wrap: wrap;
+  }
+
+  .paginator-info {
+    text-align: center;
+    width: 100%;
+  }
+}

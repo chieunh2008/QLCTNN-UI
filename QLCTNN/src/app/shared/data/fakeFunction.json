@@ -3,20 +3,20 @@
     "userId": 1,
     "functions": [
       { "icon": "dashboard", "label": "Trang chủ", "route": "/dashboard" },
-      { "icon": "group", "label": "Quản lý Loại CTNN", "route": "/type-ctnn" },
-      { "icon": "person", "label": "Quản lý CTNN", "route": "/cong-trinh" },
-      { "icon": "person", "label": "Quản lý tình trạng công trình", "route": "/tinh-trang" },
-      { "icon": "person", "label": "Vị trí", "route": "/location" },
-      { "icon": "person", "label": "Người dùng", "route": "/user" }
+      { "icon": "category", "label": "Quản lý Loại CTNN", "route": "/type-ctnn" },
+      { "icon": "domain", "label": "Quản lý CTNN", "route": "/cong-trinh" },
+      { "icon": "monitor_heart", "label": "Quản lý tình trạng công trình", "route": "/tinh-trang" },
+      { "icon": "location_on", "label": "Vị trí", "route": "/location" }
     ]
   },
   {
     "userId": -1,
     "functions": [
       { "icon": "dashboard", "label": "Trang chủ", "route": "/dashboard" },
-      { "icon": "group", "label": "Quản lý Loại CTNN", "route": "/type-ctnn" },
-      { "icon": "person", "label": "Quản lý CTNN", "route": "/cong-trinh" },
-      { "icon": "person", "label": "Vị trí", "route": "/location" }
+      { "icon": "category", "label": "Quản lý Loại CTNN", "route": "/type-ctnn" },
+      { "icon": "domain", "label": "Quản lý CTNN", "route": "/cong-trinh" },
+      { "icon": "location_on", "label": "Vị trí", "route": "/location" }
+
     ]
   }
 ]

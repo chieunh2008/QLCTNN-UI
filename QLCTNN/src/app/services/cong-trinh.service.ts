@@ -47,4 +47,12 @@ export class CongTrinhService extends BaseHttpClient {
       body: id
     });
   }
+
+  async getAllLocation(): Promise<any> {
+    const filter = { pageIndex: 1, pageSize: 10000 };
+    return this.postRequest({
+      url: `${this.apiUrl}/GetAll`,
+      body: filter
+    });
+  }
 }

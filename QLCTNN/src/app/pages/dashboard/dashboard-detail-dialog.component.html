@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Chi tiết: {{ data.tenNguong }} - {{ data.TenCongTrinh || data.tenCongTrinh }}</h2>
+<mat-dialog-content>
+  <div *ngIf="loading" class="loading-spinner"><mat-spinner diameter="36"></mat-spinner></div>
+  <div *ngIf="!loading && (!lineData || !lineData.labels || lineData.labels.length === 0)" class="empty-state">Không có dữ liệu 7 ngày</div>
+  <div *ngIf="!loading && lineData && lineData.labels && lineData.labels.length > 0" class="chart-container">
+    <canvas baseChart
+      [data]="lineData"
+      [options]="options"
+      chartType="line">
+    </canvas>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Đóng</button>
+</mat-dialog-actions>

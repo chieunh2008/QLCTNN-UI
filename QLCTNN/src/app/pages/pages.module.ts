@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardDetailDialogComponent } from './dashboard/dashboard-detail-dialog.component';
+import { DashboardTypeDialogComponent } from './dashboard/dashboard-type-dialog.component';
 import { ProjectTypeComponent } from './project-type/project-type.component';
 import { ProjectTypeAddOrEditComponent } from './project-type/project-type-add-or-edit.component';
 import { CongTrinhComponent } from './cong-trinh/cong-trinh.component';
 import { CongTrinhAddOrEditComponent } from './cong-trinh/cong-trinh-add-or-edit.component';
 import { TinhTrangComponent } from './tinh-trang/tinh-trang.component';
 import { TinhTrangAddOrEditComponent } from './tinh-trang/tinh-trang-add-or-edit.component';
+import { ProjectLocationComponent } from './project-location/project-location.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PagesRoutingModule } from './pages-routing.module';
@@ -37,7 +40,11 @@ import { MatNativeDateModule } from '@angular/material/core';
     CongTrinhComponent,
     CongTrinhAddOrEditComponent,
     TinhTrangComponent,
-    TinhTrangAddOrEditComponent
+    TinhTrangAddOrEditComponent,
+    ProjectLocationComponent,
+    // Dashboard dialogs
+    DashboardDetailDialogComponent,
+    DashboardTypeDialogComponent
   ],
   imports: [
     CommonModule,

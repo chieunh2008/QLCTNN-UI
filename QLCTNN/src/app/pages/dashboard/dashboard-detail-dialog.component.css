@@ -1,0 +1,4 @@
+:host { display:block; width: 600px; }
+.chart-container { height: 340px; }
+.loading-spinner { display:flex; align-items:center; justify-content:center; height: 200px; }
+.empty-state { padding: 24px; text-align:center; color: rgba(0,0,0,0.6); }

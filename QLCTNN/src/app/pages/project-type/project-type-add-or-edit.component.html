@@ -4,7 +4,7 @@
   <form [formGroup]="form" class="dialog-form">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Mã loại công trình</mat-label>
-      <input matInput formControlName="Code" />
+        <input matInput formControlName="Code" />
       <mat-error *ngIf="form.get('Code')?.hasError('required')">Mã là bắt buộc</mat-error>
     </mat-form-field>
 
