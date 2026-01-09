@@ -27,7 +27,7 @@ constructor(
       if (data['title']) {
         this.titleService.setTitle(data['title']);
       } else {
-        this.titleService.setTitle('Quản lý lớp học');
+        this.titleService.setTitle('Quản lý công trình');
       }
     });
   }

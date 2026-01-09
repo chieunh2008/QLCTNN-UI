@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.confirm-message {
+  padding: 8px 0;
+  font-size: 14px;
+  color: rgba(0,0,0,0.87);
+}
+
+mat-dialog-actions button + button {
+  margin-left: 8px;
+}
+
+/* Allow parent panelClass to decorate container */
+::ng-deep .confirm-dialog .mat-dialog-container {
+  border-radius: 8px;
+}

@@ -8,6 +8,7 @@ import { CongTrinhComponent } from './cong-trinh/cong-trinh.component';
 import { CongTrinhAddOrEditComponent } from './cong-trinh/cong-trinh-add-or-edit.component';
 import { TinhTrangComponent } from './tinh-trang/tinh-trang.component';
 import { TinhTrangAddOrEditComponent } from './tinh-trang/tinh-trang-add-or-edit.component';
+import { TinhTrangListDialogComponent } from './tinh-trang/tinh-trang-list-dialog.component';
 import { ProjectLocationComponent } from './project-location/project-location.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -41,10 +42,13 @@ import { MatNativeDateModule } from '@angular/material/core';
     CongTrinhAddOrEditComponent,
     TinhTrangComponent,
     TinhTrangAddOrEditComponent,
+    TinhTrangListDialogComponent,
     ProjectLocationComponent,
     // Dashboard dialogs
     DashboardDetailDialogComponent,
-    DashboardTypeDialogComponent
+    DashboardTypeDialogComponent,
+    // TinhTrang dialogs
+    TinhTrangListDialogComponent
   ],
   imports: [
     CommonModule,

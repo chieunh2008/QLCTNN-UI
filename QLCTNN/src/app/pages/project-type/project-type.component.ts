@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { getErrorMessage } from 'src/app/shared/error-helper';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/shared/component/confirm-dialog/confirm-dialog.component';
 import { ProjectTypeService } from 'src/app/services/project-type.service';
 import { ProjectTypeFilter } from 'src/app/core/models/project-type-filter.model';
 import { ProjectType } from 'src/app/core/models/project-type.model';
@@ -97,7 +99,7 @@ export class ProjectTypeComponent implements OnInit {
       this.computePageButtons();
       this.loading = false;
     }).catch((err: any) => {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       this.loading = false;
     });
   }
@@ -192,31 +194,36 @@ export class ProjectTypeComponent implements OnInit {
       const data: any = await this.projectTypeService.getAll(this.filter);
       this.projectTypes = data.data || [];
     } catch (err: any) {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
     } finally {
       this.loading = false;
     }
   }
 
   async deleteProjectType(id: number): Promise<void> {
-    if (!confirm('Bạn có chắc chắn muốn xóa?')) {
-      return;
-    }
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: { title: 'Xóa loại dự án', message: 'Bạn có chắc chắn muốn xóa?', confirmButtonText: 'Xóa', cancelButtonText: 'Hủy' },
+      panelClass: 'confirm-dialog'
+    });
 
-    this.loading = true;
-    try {
-      const res: any = await this.projectTypeService.delete(id);
-      if (res.meta.error_code === 200) {
-        this.snackBar.open('Xóa thành công!', 'Đóng', { duration: 2000 });
-        await this.loadProjectTypesAsync();
-      } else {
-        this.snackBar.open(res.meta.error_message, 'Đóng', { duration: 2000 });
+    ref.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (!confirmed) return;
+      this.loading = true;
+      try {
+        const res: any = await this.projectTypeService.delete(id);
+        if (res.meta.error_code === 200) {
+          this.snackBar.open('Xóa thành công!', 'Đóng', { duration: 2000 });
+          await this.loadProjectTypesAsync();
+        } else {
+          this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 2000 });
+        }
+      } catch (err: any) {
+        this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
+      } finally {
+        this.loading = false;
       }
-    } catch (err: any) {
-      this.snackBar.open('Lỗi xóa: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
   getValueDisplay(values: string[]): string {

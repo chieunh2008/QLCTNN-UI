@@ -107,7 +107,7 @@ export class ProjectTypeAddOrEditComponent implements OnInit {
         this.selectedTenNguong = (item as any).TenNguong.split(',').map((v: string) => v.trim()).filter((v: string) => v);
       }
     } catch (err: any) {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       this.dialogRef.close({ saved: false });
     } finally {
       this.loading = false;
@@ -128,19 +128,19 @@ export class ProjectTypeAddOrEditComponent implements OnInit {
           this.snackBar.open('Cập nhật thành công', 'Đóng', { duration: 2000 });
           this.dialogRef.close({ saved: true });
         } else {
-          this.snackBar.open(res.meta?.error_message || 'Lỗi khi cập nhật', 'Đóng', { duration: 3000 });
+          this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
         }
       } else {
         const res: any = await this.projectTypeService.create(formData);
         if (res.meta?.error_code === 200) {
-          this.snackBar.open('Thêm mới thành công', 'Đóng', { duration: 2000 });
+          this.snackBar.open('Lưu thành công', 'Đóng', { duration: 2000 });
           this.dialogRef.close({ saved: true });
         } else {
-          this.snackBar.open(res.meta?.error_message || 'Lỗi khi thêm mới', 'Đóng', { duration: 3000 });
+          this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
         }
       }
     } catch (err: any) {
-      this.snackBar.open('Lỗi: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
     } finally {
       this.loading = false;
     }

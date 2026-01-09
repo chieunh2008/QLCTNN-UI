@@ -72,7 +72,7 @@ export class CongTrinhAddOrEditComponent implements OnInit {
       });
       this.loading = false;
     }).catch((err: any) => {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       this.loading = false;
     });
   }
@@ -142,10 +142,10 @@ export class CongTrinhAddOrEditComponent implements OnInit {
         this.snackBar.open(this.isEdit ? 'Cập nhật thành công!' : 'Thêm mới thành công!', 'Đóng', { duration: 2000 });
         this.dialogRef.close({ saved: true });
       } else {
-        this.snackBar.open(res.meta.error_message, 'Đóng', { duration: 2000 });
+        this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 2000 });
       }
     } catch (err: any) {
-      this.snackBar.open('Lỗi: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
     } finally {
       this.loading = false;
     }

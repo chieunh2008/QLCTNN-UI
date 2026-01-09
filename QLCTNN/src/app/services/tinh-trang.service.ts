@@ -20,10 +20,31 @@ export class TinhTrangService extends BaseHttpClient {
     });
   }
 
+  // New: Get list of current thresholds/statuses (non-paginated)
+  async getList(): Promise<any> {
+    return this.getRequest({
+      url: `${this.apiUrl}/GetList`,
+    });
+  }
+
+  // New: delete threshold by key (LCTId, CTId, TenNguong)
+  async deleteByKey(payload: any): Promise<any> {
+    return this.postRequest({
+      url: `${this.apiUrl}/DeleteByKey`,
+      body: payload
+    });
+  }
+
   async getById(id: number): Promise<any> {
     return this.postRequest({
       url: `${this.apiUrl}/GetById?id=${id}`,
       body: id
+    });
+  }
+  async getByCTId(data:any): Promise<any> {
+    return this.postRequest({
+      url: `${this.apiUrl}/GetByCTId`,
+      body: data
     });
   }
 
@@ -42,9 +63,8 @@ export class TinhTrangService extends BaseHttpClient {
   }
 
   async delete(id: number): Promise<any> {
-    return this.postRequest({
-      url: `${this.apiUrl}/Delete`,
-      body: id
+    return this.deleteRequest({
+      url: `${this.apiUrl}/Delete/${id}`,
     });
   }
 }

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { getErrorMessage } from 'src/app/shared/error-helper';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/shared/component/confirm-dialog/confirm-dialog.component';
 import { CongTrinhService } from 'src/app/services/cong-trinh.service';
 import { ProjectTypeService } from 'src/app/services/project-type.service';
 import { CongTrinhFilter } from 'src/app/core/models/cong-trinh-filter.model';
@@ -114,7 +116,7 @@ export class CongTrinhComponent implements OnInit {
       this.computePageButtons();
       this.loading = false;
     }).catch((err: any) => {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       this.loading = false;
     });
   }
@@ -185,31 +187,36 @@ export class CongTrinhComponent implements OnInit {
       const data: any = await this.congTrinhService.getAll(this.filter);
       this.congTrinhs = data.data || [];
     } catch (err: any) {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
     } finally {
       this.loading = false;
     }
   }
 
   async deleteCongTrinh(id: number): Promise<void> {
-    if (!confirm('Bạn có chắc chắn muốn xóa?')) {
-      return;
-    }
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: { title: 'Xóa công trình', message: 'Bạn có chắc chắn muốn xóa?', confirmButtonText: 'Xóa', cancelButtonText: 'Hủy' },
+      panelClass: 'confirm-dialog'
+    });
 
-    this.loading = true;
-    try {
-      const res: any = await this.congTrinhService.delete(id);
-      if (res.meta.error_code === 200) {
-        this.snackBar.open('Xóa thành công!', 'Đóng', { duration: 2000 });
-        await this.loadCongTrinhsAsync();
-      } else {
-        this.snackBar.open(res.meta.error_message, 'Đóng', { duration: 2000 });
+    ref.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (!confirmed) return;
+      this.loading = true;
+      try {
+        const res: any = await this.congTrinhService.delete(id);
+        if (res.meta.error_code === 200) {
+          this.snackBar.open('Xóa thành công!', 'Đóng', { duration: 2000 });
+          await this.loadCongTrinhsAsync();
+        } else {
+          this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 2000 });
+        }
+      } catch (err: any) {
+        this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
+      } finally {
+        this.loading = false;
       }
-    } catch (err: any) {
-      this.snackBar.open('Lỗi xóa: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
   getProjectTypeName(loaiId: number): string {

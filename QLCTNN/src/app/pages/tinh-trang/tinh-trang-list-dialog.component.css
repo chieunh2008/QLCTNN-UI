@@ -1,0 +1,5 @@
+:host { display:block; width: 90vw; }
+.list-container { padding: 8px; }
+.empty { color: rgba(0,0,0,0.6); padding: 12px; }
+.data-table td, .data-table th { padding: 8px 12px; }
+mat-dialog-actions[align="start"] { padding: 12px 24px 8px 24px; }

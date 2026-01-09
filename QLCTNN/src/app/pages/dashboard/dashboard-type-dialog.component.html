@@ -1,11 +1,14 @@
-<h2 mat-dialog-title>Phân bố theo loại - {{ data.selectedLabel }}</h2>
+<h2 mat-dialog-title>Phân bố theo loại</h2>
 <mat-dialog-content>
-  <div class="chart-container">
-    <canvas baseChart
-      [data]="chartData"
-      [options]="options"
-      chartType="bar">
-    </canvas>
+  <div class="dialog-subtitle">Loại: <strong>{{ data.selectedLabel }}</strong></div>
+  <div class="dialog-chart-scroll">
+    <app-bar-chart
+      [barChartLabels]="labels"
+      [barChartData]="chartData"
+      [barChartOptions]="options"
+      [chartStyle]="chartStyle"
+      chartClass="inline-chart">
+    </app-bar-chart>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

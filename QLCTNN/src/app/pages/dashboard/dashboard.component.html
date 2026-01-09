@@ -1,69 +1,104 @@
 <div class="dashboard-container">
-  <div class="dashboard-grid">
-    <app-shared-card header="Tổng quan" background="#fff">
-      <div class="overview-grid">
-        <div class="overview-item">
-          <div class="count">{{ totalProjects }}</div>
-          <div class="label">Tổng số công trình</div>
+  <mat-tab-group class="dashboard-tabs" [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
+    <mat-tab label="Tổng quan">
+      <ng-container *ngIf="selectedTabIndex === 0">
+        <div [@slideVertical]="{ value: animationState, params: { enterTransform: animationState === 'down' ? 'translateY(-12px)' : 'translateY(12px)', leaveTransform: animationState === 'down' ? 'translateY(12px)' : 'translateY(-12px)' } }">
+          <app-shared-card header="Tổng quan" background="#fff">
+            <div class="overview-grid">
+              <div class="overview-item">
+                <div class="count">{{ totalProjects }}</div>
+                <div class="label">Tổng số công trình</div>
+              </div>
+              <div class="overview-item">
+                <div class="count">{{ totalTypes }}</div>
+                <div class="label">Số loại công trình</div>
+              </div>
+              <div class="overview-actions">
+                <button mat-stroked-button color="primary" (click)="loadOverview()">Cập nhật</button>
+              </div>
+            </div>
+          </app-shared-card>
         </div>
-        <div class="overview-item">
-          <div class="count">{{ totalTypes }}</div>
-          <div class="label">Số loại công trình</div>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Phân bố theo loại">
+      <ng-container *ngIf="selectedTabIndex === 1">
+        <div [@slideVertical]="{ value: animationState, params: { enterTransform: animationState === 'down' ? 'translateY(-12px)' : 'translateY(12px)', leaveTransform: animationState === 'down' ? 'translateY(12px)' : 'translateY(-12px)' } }">
+          <app-shared-card header="Phân bố theo loại" background="#fff">
+
+            <!-- Fixed subtitle / caption (hard-coded) -->
+            <div class="type-caption">
+              <div class="title">Phân bố theo loại công trình</div>
+              <div class="subtitle">Biểu đồ thể hiện số lượng công trình theo từng loại. Di chuột vào cột để xem tên loại và chi tiết.</div>
+            </div>
+
+            <!-- Scrollable chart area (horizontal scroll when many types) -->
+            <div class="chart-grid">
+              <div class="chart-scroll">
+                <app-bar-chart
+                  [barChartLabels]="barChartLabels"
+                  [barChartData]="barChartData"
+                  [barChartOptions]="typeChartOptionsCompact"
+                  [chartStyle]="{ width: chartInnerWidth, height: '320px' }"
+                  chartClass="inline-chart">
+                </app-bar-chart>
+              </div>
+            </div>
+          </app-shared-card>
         </div>
-        <div class="overview-actions">
-          <button mat-stroked-button color="primary" (click)="loadOverview()">Cập nhật</button>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Công trình mới">
+      <ng-container *ngIf="selectedTabIndex === 2">
+        <div [@slideVertical]="{ value: animationState, params: { enterTransform: animationState === 'down' ? 'translateY(-12px)' : 'translateY(12px)', leaveTransform: animationState === 'down' ? 'translateY(12px)' : 'translateY(-12px)' } }">
+          <app-shared-card header="Công trình mới" background="#fff">
+            <div *ngIf="recentProjects.length === 0" class="empty-state">Không có công trình</div>
+            <table *ngIf="recentProjects.length > 0" class="recent-table">
+              <tr *ngFor="let p of recentProjects">
+                <td class="name">{{ p.TenCongTrinh }}</td>
+                <td class="address">{{ p.DiaChi || 'N/A' }}</td>
+                <td class="type">{{ p.LoaiId }}</td>
+              </tr>
+            </table>
+          </app-shared-card>
         </div>
-      </div>
-    </app-shared-card>
+      </ng-container>
+    </mat-tab>
 
-    <app-shared-card header="Phân bố theo loại" background="#fff">
-      <div class="type-menu">
-        <div class="type-tile" *ngFor="let t of typeSummary" (mouseenter)="hoverType=t.label" (mouseleave)="hoverType=''" (click)="openTypeChart(t.label)" tabindex="0" (keydown.enter)="openTypeChart(t.label)">
-          <div class="type-title">{{t.label}}</div>
-          <div class="type-count">{{t.count}}</div>
-          <div class="type-hover" *ngIf="hoverType===t.label">{{t.message}}</div>
+    <mat-tab label="Trạng thái đo">
+      <ng-container *ngIf="selectedTabIndex === 3">
+        <div [@slideVertical]="{ value: animationState, params: { enterTransform: animationState === 'down' ? 'translateY(-12px)' : 'translateY(12px)', leaveTransform: animationState === 'down' ? 'translateY(12px)' : 'translateY(-12px)' } }">
+          <app-shared-card header="Trạng thái đo" background="#fff">
+            <div class="monitoring-actions" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div style="font-weight:600">Danh sách ngưỡng theo công trình</div>
+              <div>
+                <button mat-stroked-button color="primary" (click)="loadMonitoring()">Tải lại</button>
+              </div>
+            </div>
+
+            <div class="monitoring-menu">
+              <div *ngFor="let r of monitoringRows" class="menu-item" tabindex="0"
+                   (mouseenter)="hoverRow = r" (mouseleave)="hoverRow = null"
+                   (click)="openDetail(r)" (keyup.enter)="openDetail(r)">
+                <div class="menu-top">
+                  <div class="menu-title">{{ r.tenCongTrinh || r.TenCongTrinh }}</div>
+                  <div class="status-badge" [ngClass]="statusClass(r.status || r.Status)">{{ statusText(r.status || r.Status) }}</div>
+                </div>
+                <div class="menu-sub">{{ r.tenLoaiCongTrinh || r.TenLoaiCongTrinh }} • {{ r.tenNguong || r.TenNguong }}</div>
+
+                <div class="menu-hover" *ngIf="hoverRow === r">
+                  <div class="message">{{ r.message || r.Message }}</div>
+                  <button mat-button color="primary" (click)="openDetail(r); $event.stopPropagation();">Xem chi tiết</button>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="monitoringRows.length === 0" class="empty-state">Không có dữ liệu giám sát</div>
+          </app-shared-card>
         </div>
-      </div>
-    </app-shared-card>
-
-    <app-shared-card header="Công trình mới" background="#fff">
-      <div *ngIf="recentProjects.length === 0" class="empty-state">Không có công trình</div>
-      <table *ngIf="recentProjects.length > 0" class="recent-table">
-        <tr *ngFor="let p of recentProjects">
-          <td class="name">{{ p.TenCongTrinh }}</td>
-          <td class="address">{{ p.DiaChi || 'N/A' }}</td>
-          <td class="type">{{ p.LoaiId }}</td>
-        </tr>
-      </table>
-    </app-shared-card>
-
-    <!-- Monitoring menu as tiles: hover shows message, click opens detail dialog -->
-    <app-shared-card header="Trạng thái đo" background="#fff">
-      <div class="monitoring-actions" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <div style="font-weight:600">Danh sách ngưỡng theo công trình</div>
-        <div>
-          <button mat-stroked-button color="primary" (click)="loadMonitoring()">Tải lại</button>
-        </div>
-      </div>
-
-      <div class="monitoring-menu">
-        <div *ngFor="let r of monitoringRows" class="menu-item" tabindex="0"
-             (mouseenter)="hoverRow = r" (mouseleave)="hoverRow = null"
-             (click)="openDetail(r)" (keyup.enter)="openDetail(r)">
-          <div class="menu-top">
-            <div class="menu-title">{{ r.tenCongTrinh || r.TenCongTrinh }}</div>
-            <div class="status-badge" [ngClass]="statusClass(r.status || r.Status)">{{ r.status || r.Status }}</div>
-          </div>
-          <div class="menu-sub">{{ r.tenLoaiCongTrinh || r.TenLoaiCongTrinh }} • {{ r.tenNguong || r.TenNguong }}</div>
-
-          <div class="menu-hover" *ngIf="hoverRow === r">
-            <div class="message">{{ r.message || r.Message }}</div>
-            <button mat-button color="primary" (click)="openDetail(r); $event.stopPropagation();">Xem chi tiết</button>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="monitoringRows.length === 0" class="empty-state">Không có dữ liệu giám sát</div>
-    </app-shared-card>
-  </div>
+      </ng-container>
+    </mat-tab>
+  </mat-tab-group>
 </div>

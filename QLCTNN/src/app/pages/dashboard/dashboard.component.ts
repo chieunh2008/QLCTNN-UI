@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { CongTrinhService } from 'src/app/services/cong-trinh.service';
 import { ProjectTypeService } from 'src/app/services/project-type.service';
 import { MonitoringService } from 'src/app/services/monitoring.service';
@@ -10,9 +11,25 @@ import { DashboardTypeDialogComponent } from './dashboard-type-dialog.component'
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  animations: [
+    trigger('slideVertical', [
+      transition(':enter', [
+        style({ transform: '{{enterTransform}}', opacity: 0 }),
+        animate('320ms cubic-bezier(.25,.8,.25,1)', style({ transform: 'translateY(0)', opacity: 1 }))
+      ], { params: { enterTransform: 'translateY(12px)' } }),
+      transition(':leave', [
+        animate('260ms cubic-bezier(.25,.8,.25,1)', style({ transform: '{{leaveTransform}}', opacity: 0 }))
+      ], { params: { leaveTransform: 'translateY(-12px)' } })
+    ])
+  ]
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+  // tab animation state
+  selectedTabIndex = 0;
+  private prevSelectedTabIndex = 0;
+  animationState: 'down' | 'up' = 'down';
+
   loading = false;
   totalProjects = 0;
   totalTypes = 0;
@@ -26,11 +43,35 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // type summary used for tiles
   typeSummary: Array<{ label: string, count: number, message: string }> = [];
-
   // Chart inputs for app-bar-chart
   barChartLabels: string[] = [];
   barChartData: any = { labels: [], datasets: [] };
 
+  // Chart display options
+  typeChartOptionsCompact: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { ticks: { display: false }, grid: { display: false } },
+      y: { beginAtZero: true }
+    },
+    plugins: { tooltip: { enabled: true } }
+  };
+
+  typeChartOptionsPopup: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { ticks: { display: true, maxRotation: 45, autoSkip: false } },
+      y: { beginAtZero: true }
+    },
+    plugins: { tooltip: { enabled: true } }
+  };
+
+  get chartInnerWidth(): string {
+    const w = Math.max((this.barChartLabels?.length || 0) * 48, 600);
+    return w + 'px';
+  }
   private map?: L.Map;
   private mapMarkers: L.Marker[] = [];
 
@@ -79,7 +120,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.barChartData = {
         labels: this.barChartLabels,
         datasets: [
-          { data: this.barChartLabels.map(l => counts[l]), label: 'Số công trình', backgroundColor: '#3f51b5', barThickness: 22 }
+          { data: this.barChartLabels.map(l => counts[l]), label: 'Số công trình', backgroundColor: '#8c7851', barThickness: 22 }
         ]
       };
 
@@ -108,11 +149,34 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   statusClass(status: any): string {
-    if (status == null) return 'status-normal';
+    if (status == null) return 'status-other';
     const s = String(status).toLowerCase();
+
+    // numeric explicit mapping: 0 = normal (green), 1 = warning (red)
+    if (s === '0') return 'status-normal';
+    if (s === '1') return 'status-warning';
+
+    // textual statuses
     if (s.includes('warning')) return 'status-warning';
-    if (s.includes('down') || s.includes('danger') || s.includes('critical')) return 'status-danger';
-    return 'status-normal';
+    if (s.includes('down') || s.includes('danger') || s.includes('critical')) return 'status-warning';
+    if (s === 'active' || s === 'normal' || s === 'ok') return 'status-normal';
+
+    // anything else: other (yellow)
+    return 'status-other';
+  }
+
+  statusText(status: any): string {
+    if (status == null) return 'N/A';
+    const s = String(status).toLowerCase();
+
+    // Numeric mapping: 0 => Bình thường, 1 => Cảnh báo
+    if (s === '0') return 'Bình thường';
+    if (s === '1') return 'Cảnh báo';
+
+    if (s.includes('warning')) return 'Cảnh báo';
+    if (s.includes('down') || s.includes('danger') || s.includes('critical')) return 'Cảnh báo';
+    if (s === 'active' || s === 'normal' || s === 'ok') return 'Bình thường';
+    return 'Khác';
   }
 
   openDetail(row: any): void {
@@ -136,6 +200,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.dialog.open(DashboardTypeDialogComponent, { data, width: '90vw', height: '80vh', panelClass: 'dashboard-type-dialog' });
+  }
+
+  onTabChanged(index: number): void {
+    // determine direction: new index greater = down (slide from top to bottom), else up
+    this.animationState = index > this.prevSelectedTabIndex ? 'down' : 'up';
+    this.prevSelectedTabIndex = index;
+    this.selectedTabIndex = index;
   }
 
   private initMap(): void {

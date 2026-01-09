@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { getErrorMessage } from 'src/app/shared/error-helper';
 import { CongTrinhService } from 'src/app/services/cong-trinh.service';
 import { ProjectTypeService } from 'src/app/services/project-type.service';
 import { TinhTrangService } from 'src/app/services/tinh-trang.service';
@@ -29,22 +30,40 @@ export class TinhTrangAddOrEditComponent implements OnInit {
     private tinhTrangService: TinhTrangService,
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<TinhTrangAddOrEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { id: number }
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.initForm();
-    this.loadCongTrinhs();
-    this.loadProjectTypes();
+
+    // Wait for lookup lists to load before applying any prefill data
+    await Promise.all([this.loadCongTrinhs(), this.loadProjectTypes()]);
 
     if (this.data?.id && this.data.id > 0) {
-      this.loadForEdit(this.data.id);
-    }
+      await this.loadForEdit(this.data.id);
+    } else if (this.data) {
+      const { LCTId, CTId, TenNguong } = this.data;
 
-    // When project selection changes, update tenNguongOptions
-    this.form?.get('CTId')?.valueChanges.subscribe((val: number) => {
-      this.updateTenNguongOptions(val);
-    });
+      if (LCTId) {
+        this.form.patchValue({ LCTId });
+        this.filteredCongTrinhs = this.congTrinhs.filter(c => c.LoaiId === LCTId);
+        this.form.get('CTId')?.enable();
+      }
+
+      if (CTId) {
+        this.form.patchValue({ CTId });
+        this.updateTenNguongOptions(CTId);
+        if (TenNguong) {
+          this.form.patchValue({ TenNguong });
+        }
+      } else if (TenNguong) {
+        // If only TenNguong provided, ensure it's available in options and set it
+        if (!this.tenNguongOptions.includes(TenNguong)) {
+          this.tenNguongOptions = [TenNguong, ...this.tenNguongOptions];
+        }
+        this.form.patchValue({ TenNguong });
+      }
+    }
   }
 
   initForm(): void {
@@ -53,7 +72,7 @@ export class TinhTrangAddOrEditComponent implements OnInit {
       CTId: [{ value: null, disabled: true }, Validators.required],
       TenNguong: [null, Validators.required],
       Value: [null, [Validators.required]],
-      Date: [null, Validators.required],
+      Date: [this.formatDateForInput(new Date()), Validators.required],
       Note: ['']
     });
 
@@ -77,23 +96,23 @@ export class TinhTrangAddOrEditComponent implements OnInit {
     });
   }
 
-  loadCongTrinhs(): void {
+  loadCongTrinhs(): Promise<void> {
     const f: any = { pageSize: 1000, pageIndex: 1 };
-    this.congTrinhService.getAll(f).then((data: any) => {
+    return this.congTrinhService.getAll(f).then((data: any) => {
       const responseData = data.data;
       this.congTrinhs = responseData?.Items || responseData || [];
       // Keep filtered list in sync if LCT already selected
       const curLct = this.form?.get('LCTId')?.value;
       if (curLct) this.filteredCongTrinhs = this.congTrinhs.filter(c => c.LoaiId === curLct);
-    }).catch(() => this.congTrinhs = []);
+    }).catch(() => { this.congTrinhs = []; });
   }
 
-  loadProjectTypes(): void {
+  loadProjectTypes(): Promise<void> {
     const f: any = { pageSize: 1000, pageIndex: 1 };
-    this.projectTypeService.getAll(f).then((data: any) => {
+    return this.projectTypeService.getAll(f).then((data: any) => {
       const responseData = data.data;
       this.projectTypes = responseData?.Items || responseData || [];
-    }).catch(() => this.projectTypes = []);
+    }).catch(() => { this.projectTypes = []; });
   }
 
   updateTenNguongOptions(ctId?: number): void {
@@ -114,8 +133,27 @@ export class TinhTrangAddOrEditComponent implements OnInit {
 
   parseDateToIso(d: any): string {
     if (!d) return new Date().toISOString();
-    if (typeof d === 'string') return d;
+    if (typeof d === 'string') {
+      // Accept both native datetime-local (YYYY-MM-DDTHH:mm) and ISO strings
+      const parsed = new Date(d);
+      return parsed.toISOString();
+    }
     return new Date(d).toISOString();
+  }
+
+  /**
+   * Format a date for the native datetime-local input: YYYY-MM-DDTHH:mm
+   */
+  formatDateForInput(d: any): string {
+    if (!d) return '';
+    const date = d instanceof Date ? d : new Date(d);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const min = pad(date.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
   }
 
   async loadForEdit(id: number): Promise<void> {
@@ -128,12 +166,12 @@ export class TinhTrangAddOrEditComponent implements OnInit {
         CTId: item.CTId ?? null,
         TenNguong: item.TenNguong,
         Value: item.Value,
-        Date: item.Date ? new Date(item.Date) : null,
+        Date: item.Date ? this.formatDateForInput(new Date(item.Date)) : this.formatDateForInput(new Date()),
         Note: item.Note || ''
       });
       this.updateTenNguongOptions(item.CTId ?? undefined);
     } catch (err: any) {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       this.dialogRef.close({ saved: false });
     } finally {
       this.loading = false;
@@ -164,10 +202,10 @@ export class TinhTrangAddOrEditComponent implements OnInit {
         this.snackBar.open('Lưu thành công', 'Đóng', { duration: 2000 });
         this.dialogRef.close({ saved: true });
       } else {
-        this.snackBar.open(res.meta?.error_message || 'Lỗi khi lưu', 'Đóng', { duration: 3000 });
+        this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       }
     } catch (err: any) {
-      this.snackBar.open('Lỗi: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
     } finally {
       this.loading = false;
     }

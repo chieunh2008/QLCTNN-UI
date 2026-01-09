@@ -15,6 +15,53 @@
   align-items: stretch;
 }
 
+/* Tabs layout: use when dashboard shows content in tabs */
+.dashboard-tabs { width: 92%; }
+.dashboard-tabs app-shared-card { display: flex; flex-direction: column; min-height: 33vh; transition: transform 160ms ease, box-shadow 160ms ease; overflow: hidden; }
+.dashboard-tabs app-shared-card .shared-card { height: 100%; display:flex; flex-direction: column; }
+.dashboard-tabs app-shared-card .shared-card-content { flex: 1 1 auto; min-height: 0; display:block; overflow:auto; -webkit-overflow-scrolling: touch; padding-right:6px; padding:12px; box-sizing: border-box; }
+
+/* Dashboard tab theme: use #8c7851 (primary) for header and white for labels */
+/* Stronger selectors with !important to override Material theme colors */
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-tab-header {
+  background: #8c7851 !important;
+  color: #ffffff !important;
+  border-radius: 8px 8px 0 0 !important;
+  box-shadow: none !important;
+}
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-tab-labels {
+  align-items: center;
+}
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-tab-label {
+  color: rgba(255,255,255,0.92) !important;
+  padding: 12px 18px;
+  transition: background .12s ease, color .12s ease;
+  border-radius: 0;
+}
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-tab-label:hover {
+  color: #ffffff !important;
+}
+/* Active tab: invert background to white and text to #8c7851 */
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-tab-label.mat-tab-label-active {
+  background: #ffffff !important;
+  color: #8c7851 !important;
+  font-weight: 600 !important;
+  margin-top: -6px !important;
+  padding: 14px 18px !important;
+  border-radius: 6px 6px 0 0 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.16) !important;
+  z-index: 5 !important;
+}
+/* Remove default ink bar since active label shows white background */
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-ink-bar { display: none !important; }
+/* Ensure tab body remains white for content contrast */
+.dashboard-tabs ::ng-deep .mat-tab-body {
+  background: #ffffff;
+}
+/* Ensure tab-group container doesn't apply Material primary background */
+.dashboard-tabs ::ng-deep .mat-tab-group { background: transparent !important; }
+.dashboard-tabs ::ng-deep .mat-tab-group .mat-tab-header-panel { background: transparent !important; }
+
 /* Ensure shared-card inner container stretches and supports scrolling */
 .dashboard-grid app-shared-card {
   display: flex;
@@ -86,9 +133,11 @@
 .monitoring-table-inner { width: 100%; border-collapse: collapse; }
 .monitoring-table-inner th { text-align:left; padding:8px; background:#f5f5f5; font-weight:600; }
 .monitoring-table-inner td { padding:8px; border-bottom:1px solid #eee; }
-.status-badge { padding:4px 8px; border-radius:12px; color:#fff; font-weight:600; font-size:12px; }
+.status-badge { padding:6px 10px; border-radius:14px; color:#fff; font-weight:700; font-size:13px; display:inline-block; }
 .status-normal { background:#16a34a; }
-.status-warning { background:#f59e0b; }
+.status-warning { background:#ef4444; }
+/* 'Other' statuses use yellow and dark text for contrast */
+.status-other { background:#f59e0b; color: #2b2b2b !important; }
 .status-danger { background:#ef4444; }
 
 .monitoring-map { width: 440px; height: 360px; border-radius:6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
@@ -99,14 +148,20 @@
   position: relative;
   padding: 12px;
   border-radius: 8px;
-  background: #fff;
+  background: #8c7851;
+  color: #ffffff;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
   min-height: 80px;
 }
-.menu-item:focus { outline: 2px solid rgba(63,81,181,0.2); }
-.menu-item:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+.menu-item:focus { outline: 2px solid rgba(140,120,81,0.18); }
+.menu-item:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); background: #7a6a48; }
+
+/* Adjust text layers inside menu item to ensure contrast */
+.menu-item .menu-title { color: #ffffff; }
+.menu-item .menu-sub { color: rgba(255,255,255,0.85); }
+.menu-item .menu-top svg, .menu-item .menu-top mat-icon { color: rgba(255,255,255,0.95); }
 .menu-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
 .menu-title { font-weight:600; }
 .menu-sub { color: rgba(0,0,0,0.6); font-size:13px; margin-top:6px; }
@@ -122,7 +177,21 @@
   .monitoring-map { order: 2; }
 }
 
-/* Type menu */
+/* Type menu (removed in favour of chart) */
+.type-caption { padding: 8px 12px; border-bottom: 1px solid #eee; }
+.type-caption .title { font-weight:700; font-size:16px; }
+.type-caption .subtitle { color: rgba(0,0,0,0.6); font-size:13px; margin-top:6px; }
+
+/* Chart grid + scroll */
+.chart-grid { padding: 12px; }
+.chart-scroll { overflow-x: auto; overflow-y: hidden; padding-bottom: 8px; }
+.inline-chart { display: inline-block; }
+.chart-note { padding: 8px 12px; color: rgba(0,0,0,0.6); font-size: 13px; }
+
+/* keep some spacing for the card content */
+.app-shared-card .shared-card-content { padding: 0; }
+
+/* Type tile styles left in case needed elsewhere */
 .type-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: start; }
 .type-tile { position: relative; padding: 12px; border-radius: 8px; background:#fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; min-height: 72px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: visible; }
 .type-title { font-weight:600; margin-bottom:6px; }

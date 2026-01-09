@@ -42,9 +42,8 @@ export class CongTrinhService extends BaseHttpClient {
   }
 
   async delete(id: number): Promise<any> {
-    return this.postRequest({
-      url: `${this.apiUrl}/Delete`,
-      body: id
+    return this.deleteRequest({
+      url: `${this.apiUrl}/Delete/${id}`,
     });
   }
 

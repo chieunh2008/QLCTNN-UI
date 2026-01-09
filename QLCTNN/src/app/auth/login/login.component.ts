@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('menuFunctions', JSON.stringify(menuFunctions));
         this.router.navigate(['/']);
       } else {
-        this.snackBar.open(res.meta.error_message, 'Đóng', { duration: 2000 });
+        this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 2000 });
       }
     });
   }

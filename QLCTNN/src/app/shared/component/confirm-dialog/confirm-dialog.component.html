@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>{{ data?.title || 'Xác nhận' }}</h2>
+<mat-dialog-content>
+  <div class="confirm-message">{{ data?.message || 'Bạn có chắc chắn muốn thực hiện thao tác này?' }}</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close="false">{{ data?.cancelButtonText || 'Hủy' }}</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">{{ data?.confirmButtonText || 'Xóa' }}</button>
+</mat-dialog-actions>

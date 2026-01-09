@@ -67,13 +67,19 @@
       <!-- STT Column -->
       <ng-container matColumnDef="stt">
         <th mat-header-cell *matHeaderCellDef>STT</th>
-        <td mat-cell *matCellDef="let element; let index = index">{{ (filter.pageIndex - 1) * filter.pageSize + index + 1 }}</td>
+        <td mat-cell *matCellDef="let element; let index = index">{{ index + 1 }}</td>
+      </ng-container>
+
+      <!-- TenLoaiCongTrinh Column -->
+      <ng-container matColumnDef="TenLoaiCongTrinh">
+        <th mat-header-cell *matHeaderCellDef>Loại Công Trình</th>
+        <td mat-cell *matCellDef="let element">{{ element.TenLoaiCongTrinh || '-' }}</td>
       </ng-container>
 
       <!-- TenCongTrinh Column -->
       <ng-container matColumnDef="TenCongTrinh">
         <th mat-header-cell *matHeaderCellDef>Công Trình</th>
-        <td mat-cell *matCellDef="let element">{{ getProjectName(element.CTId) }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.TenCongTrinh || getProjectName(element.CTId) }}</td>
       </ng-container>
 
       <!-- TenNguong Column -->
@@ -82,34 +88,19 @@
         <td mat-cell *matCellDef="let element">{{ element.TenNguong }}</td>
       </ng-container>
 
-      <!-- Value Column -->
-      <ng-container matColumnDef="Value">
-        <th mat-header-cell *matHeaderCellDef>Giá Trị</th>
-        <td mat-cell *matCellDef="let element">{{ element.Value }}</td>
-      </ng-container>
-
-      <!-- Date Column -->
-      <ng-container matColumnDef="Date">
-        <th mat-header-cell *matHeaderCellDef>Ngày đo</th>
-        <td mat-cell *matCellDef="let element">{{ element.Date | date: 'short' }}</td>
-      </ng-container>
-
-      <!-- Note Column -->
-      <ng-container matColumnDef="Note">
-        <th mat-header-cell *matHeaderCellDef>Ghi chú</th>
-        <td mat-cell *matCellDef="let element">{{ element.Note || '-' }}</td>
-      </ng-container>
-
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Thao Tác</th>
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button (click)="openEdit(element)" matTooltip="Chỉnh sửa">
-            <mat-icon>edit</mat-icon>
+          <button mat-icon-button (click)="openAddFor(element)" matTooltip="Thêm giá trị đo">
+            <mat-icon>add</mat-icon>
           </button>
-          <button mat-icon-button (click)="deleteItem(element.Id)" matTooltip="Xóa">
-            <mat-icon color="warn">delete</mat-icon>
+          <button mat-icon-button (click)="openManageMeasurements(element)" matTooltip="Lịch sử đo">
+            <mat-icon>view_list</mat-icon>
           </button>
+          <!-- <button mat-icon-button color="warn" (click)="deleteThreshold(element)" matTooltip="Xóa cấu hình">
+            <mat-icon>delete</mat-icon>
+          </button> -->
         </td>
       </ng-container>
 

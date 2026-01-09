@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from 'src/app/shared/component/confirm-dialog/confirm-dialog.component';
 import { CongTrinh } from 'src/app/core/models/cong-trinh.model';
 import { ProjectType } from 'src/app/core/models/project-type.model';
 import { TinhTrangCongTrinh } from 'src/app/core/models/tinh-trang.model';
 import { CongTrinhService } from 'src/app/services/cong-trinh.service';
 import { ProjectTypeService } from 'src/app/services/project-type.service';
 import { TinhTrangService } from 'src/app/services/tinh-trang.service';
-import { TinhTrangAddOrEditComponent } from './tinh-trang-add-or-edit.component'; 
+import { TinhTrangAddOrEditComponent } from './tinh-trang-add-or-edit.component';
+import { TinhTrangListDialogComponent } from './tinh-trang-list-dialog.component'; 
 
 @Component({
   selector: 'app-tinh-trang',
@@ -21,7 +23,8 @@ export class TinhTrangComponent implements OnInit {
   congTrinhs: CongTrinh[] = [];
   filteredCongTrinhs: CongTrinh[] = [];
   projectTypes: ProjectType[] = [];
-  displayedColumns: string[] = ['stt', 'TenCongTrinh', 'TenNguong', 'Value', 'Date', 'Note', 'actions'];
+  // New columns: TenLoaiCongTrinh, TenCongTrinh, TenNguong, Status, Message, actions
+  displayedColumns: string[] = ['stt', 'TenLoaiCongTrinh', 'TenCongTrinh', 'TenNguong','actions'];
 
   // Filter & pagination
   filterForm!: FormGroup;
@@ -97,7 +100,7 @@ export class TinhTrangComponent implements OnInit {
 
   loadCongTrinhs(): void {
     const filter: any = { pageSize: 1000, pageIndex: 1 };
-    this.congTrinhService.getAll(filter).then((data: any) => {
+    this.tinhTrangService.getAll(filter).then((data: any) => {
       const responseData = data.data;
       this.congTrinhs = responseData?.Items || responseData || [];
       // Initialize filtered list
@@ -123,16 +126,23 @@ export class TinhTrangComponent implements OnInit {
 
   loadItems(): void {
     this.loading = true;
-    this.tinhTrangService.getAll(this.filter).then((data: any) => {
-      const responseData = data.data;
-      const items = responseData?.Items || responseData || [];
-      this.totalRecords = responseData?.TotalCount || items.length;
-      this.totalPages = Math.ceil(this.totalRecords / this.filter.pageSize);
+    // Use GetList API (non-paginated) to load current statuses
+    const payload: any = {
+      LCTId: this.filter.LCTId ?? null,
+      CTId: this.filter.CTId ?? null,
+      query: this.filter.query ?? null
+    };
+
+    this.tinhTrangService.getList().then((data: any) => {
+      const items = data?.data || data || [];
       this.items = items;
-      this.computePageButtons();
+      // No pagination for list endpoint
+      this.totalRecords = items.length;
+      this.totalPages = 1;
+      this.pageButtons = [];
       this.loading = false;
     }).catch((err: any) => {
-      this.snackBar.open('Lỗi tải dữ liệu: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
+      this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
       this.loading = false;
     });
   }
@@ -187,36 +197,64 @@ export class TinhTrangComponent implements OnInit {
     });
   }
 
-  openEdit(item: TinhTrangCongTrinh): void {
+  openAddFor(item: any): void {
     const ref = this.dialog.open(TinhTrangAddOrEditComponent, {
       width: '600px',
-      data: { id: item.Id }
+      data: { id: 0, LCTId: item.LCTId, CTId: item.CTId, TenNguong: item.TenNguong }
     });
     ref.afterClosed().subscribe((res: any) => {
       if (res?.saved) this.loadItems();
     });
   }
 
-  async deleteItem(id: number): Promise<void> {
-    if (!confirm('Bạn có chắc chắn muốn xóa?')) return;
-    this.loading = true;
-    try {
-      const res: any = await this.tinhTrangService.delete(id);
-      if (res.meta?.error_code === 200) {
-        this.snackBar.open('Xóa thành công', 'Đóng', { duration: 2000 });
-        this.loadItems();
-      } else {
-        this.snackBar.open(res.meta?.error_message || 'Lỗi khi xóa', 'Đóng', { duration: 3000 });
+  openManageMeasurements(item: any): void {
+    console.log(item);
+    
+    const ref = this.dialog.open(TinhTrangListDialogComponent, {
+      width: '90vw',
+      data: { LCTId: item.LCTId, CTId: item.CTId, TenNguong: item.TenNguong }
+    });
+
+    ref.afterClosed().subscribe(() => this.loadItems());
+  }
+
+  async deleteThreshold(item: any): Promise<void> {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: { title: 'Xóa cấu hình', message: 'Bạn có chắc chắn muốn xóa cấu hình này?', confirmButtonText: 'Xóa', cancelButtonText: 'Hủy' },
+      panelClass: 'confirm-dialog'
+    });
+
+    ref.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (!confirmed) return;
+      this.loading = true;
+      try {
+        const res: any = await this.tinhTrangService.deleteByKey({ LCTId: item.LCTId, CTId: item.CTId, TenNguong: item.TenNguong });
+        if (res.meta?.error_code === 200) {
+          this.snackBar.open('Xóa cấu hình thành công', 'Đóng', { duration: 2000 });
+          this.loadItems();
+        } else {
+          this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
+        }
+      } catch (err: any) {
+        this.snackBar.open('Đang có lỗi xảy ra vui lòng thử lại sau!', 'Đóng', { duration: 3000 });
+      } finally {
+        this.loading = false;
       }
-    } catch (err: any) {
-      this.snackBar.open('Lỗi: ' + (err?.error?.meta?.error_message || err.message), 'Đóng', { duration: 3000 });
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
   getProjectName(ctId?: number): string {
     const p = this.congTrinhs.find(c => c.Id === ctId);
     return p ? p.TenCongTrinh : 'N/A';
+  }
+
+  statusClass(status: any): string {
+    if (status == null) return 'status-normal';
+    const s = String(status).toLowerCase();
+    if (s.includes('warning')) return 'status-warning';
+    if (s.includes('down') || s.includes('danger') || s.includes('critical')) return 'status-danger';
+    if (s === '1' || s === '1' || s === 'active') return 'status-normal';
+    return 'status-normal';
   }
 }

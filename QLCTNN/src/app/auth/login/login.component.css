@@ -81,6 +81,21 @@ body, html {
   animation: show 0.6s;
 }
 
+/* Hide sign-up UI only (keep code intact) */
+.sign-up-container {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* Hide overlay right panel (sign-up prompts) */
+.overlay-right {
+  display: none !important;
+}
+/* Hide explicit sign-up button (fallback) */
+#signUp, .form-container.sign-up-container button[mat-raised-button] {
+  display: none !important;
+}
+
 .sign-in-container {
   left: 0;
   z-index: 2;
